@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
 <psalm
-    totallyTyped="true"
-    resolveFromConfigFile="true"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="https://getpsalm.org/schema/config"
-    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+        totallyTyped="true"
+        resolveFromConfigFile="true"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://getpsalm.org/schema/config"
+        xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 >
     <projectFiles>
         <directory name="config" />
         <directory name="public" />
         <directory name="src" />
+        <directory name="tests" />
         <ignoreFiles>
             <directory name="vendor" />
         </ignoreFiles>
@@ -17,5 +18,13 @@
 
     <issueHandlers>
         <LessSpecificReturnType errorLevel="info" />
+
+        <!-- PHPUnit -->
+        <PropertyNotSetInConstructor>
+            <errorLevel type="suppress">
+                <directory name="src/Http/Test" />
+                <directory name="tests" />
+            </errorLevel>
+        </PropertyNotSetInConstructor>
     </issueHandlers>
 </psalm>
