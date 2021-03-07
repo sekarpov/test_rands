@@ -16,5 +16,5 @@ class Command
     /**
      * @Assert\NotBlank()
      */
-    public int $length = 0;
+    public ?int $length = null;
 }

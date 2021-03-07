@@ -29,7 +29,7 @@ class Generator
             }
         }
 
-        throw new \RuntimeException(sprintf(
+        throw new \DomainException(sprintf(
             'Unable to generate indicators with type %s',
             $type
         ));
