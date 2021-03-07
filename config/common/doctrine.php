@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 use Doctrine\ORM\Tools\Setup;
 use Psr\Container\ContainerInterface;
+use Doctrine\DBAL\Types\Type;
 
 return [
     EntityManagerInterface::class => function (ContainerInterface $container): EntityManagerInterface {
@@ -26,12 +27,28 @@ return [
          */
         $settings = $container->get('config')['doctrine'];
 
-        $config = Setup::createAnnotationMetadataConfiguration($settings['metadata_dirs'], $settings['dev_mode'], $settings['proxy_dir'], $settings['cache_dir'] ? new FilesystemCache($settings['cache_dir']) : new ArrayCache(), false);
+        $config = Setup::createAnnotationMetadataConfiguration(
+            $settings['metadata_dirs'],
+            $settings['dev_mode'],
+            $settings['proxy_dir'],
+            $settings['cache_dir'] ? new FilesystemCache($settings['cache_dir']) : new ArrayCache(),
+            false
+        );
 
         $config->setNamingStrategy(new UnderscoreNamingStrategy());
 
-        return EntityManager::create($settings['connection'], $config);
+        foreach ($settings['types'] as $name => $class) {
+            if (!Type::hasType($name)) {
+                Type::addType($name, $class);
+            }
+        }
+
+        return EntityManager::create(
+            $settings['connection'],
+            $config
+        );
     },
+
 
     'config' => [
         'doctrine' => [
@@ -46,7 +63,12 @@ return [
                 'dbname' => getenv('DB_NAME'),
                 'charset' => 'utf-8'
             ],
-            'metadata_dirs' => [],
+            'metadata_dirs' => [
+                __DIR__ . '/../../src/Indicators/Entity'
+            ],
+            'types' => [
+                Indicators\Entity\Indicator\IdType::NAME => Indicators\Entity\Indicator\IdType::class
+            ]
         ],
     ],
 ];
