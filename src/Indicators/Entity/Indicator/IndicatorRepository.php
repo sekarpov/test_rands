@@ -26,7 +26,10 @@ class IndicatorRepository
      */
     public function get(Id $id): Indicator
     {
-        if (!$indicator = $this->repo->find($id->getValue())) {
+        /** @var Indicator|false $indicator */
+        $indicator = $this->repo->find($id->getValue());
+
+        if (!$indicator) {
             throw new DomainException('Indicator is not found');
         }
         /** @var Indicator $indicator */
